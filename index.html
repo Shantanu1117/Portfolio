@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portfolio</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+ 
+  .btn-icon:hover {
+  box-shadow: 0 0 20px var(--theme-color);
+}
+  .project-card {
+  will-change: transform, opacity;
+}
+.slide-out-left {
+  animation: slideOutLeft 0.4s forwards;
+}
+.slide-in-right {
+  animation: slideInRight 0.4s forwards;
+}
+html {
+  scroll-behavior: smooth;
+}
+.slide-out-right {
+  animation: slideOutRight 0.4s forwards;
+}
+.slide-in-left {
+  animation: slideInLeft 0.4s forwards;
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-100px); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100px); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+  :root {
+  --theme-color: #ff6a00;
+}
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at bottom,  var(--theme-color), #1a001f 60%);
+}
+.cursor-pointer:hover {
+  box-shadow: 0 0 30px var(--theme-color);
+  transform: scale(1.05);
+}
+.fade {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease;
+}
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card:hover {
+  box-shadow: 0 0 25px var(--theme-color);
+}
+
+.hero-text { animation: fadeInUp 1.2s ease forwards; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  animation: moveStars 60s linear infinite;
+}                                                                                          
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 10000px 5000px; }
+}#about-text ul li {
+  margin-bottom: 6px;
+}
+button {
+  transition: all 0.2s ease;
+}
+button:active {
+  transform: scale(0.9);
+}
+
+#about-text {
+  transition: all 0.5s ease;
+}
+.fade-text {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.show-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--theme-color);
+  width: 0%;
+  z-index: 9999;
+}
+.project-card {
+  transition: all 0.3s ease;
+}
+.project-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 0 25px var(--theme-color);
+}
+
+.fade {
+  opacity: 0;
+  transform: translateY(60px) scale(0.95);
+  transition: all 0.8s ease;
+}
+.fade.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.hero-text span {
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 5px var(--theme-color); }
+  to { text-shadow: 0 0 20px var(--theme-color); }
+}
+#about-cta {
+  transition: all 0.5s ease;
+}
+section {
+  scroll-margin-top: 80px;
+}
+
+.rocket {
+  font-size: 70px; 
+  animation: floatRocket 1.5s ease-in-out infinite;
+}
+
+@keyframes floatRocket {
+  0% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(-5deg); }
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-icon span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.btn-icon:hover span {
+  transform: translateX(6px);
+}
+
+.btn-icon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg);
+}
+
+.btn-icon:hover::after {
+  animation: shine 0.6s forwards;
+}
+
+@keyframes shine {
+  to {
+    left: 125%;
+  }
+}
+#cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  box-shadow: 0 0 20px var(--theme-color),
+              0 0 40px var(--theme-color),
+              0 0 60px var(--theme-color);
+  transition: transform 0.08s ease;
+  z-index: 9999;
+}
+</style>
+</head>
+<div id="cursor"></div>
+
+<body class="text-white overflow-x-hidden">
+
+<div id="progress-bar"></div>
+<nav id="nav" class="fixed w-full top-0 z-50 backdrop-blur-md bg-white/80 text-black">
+  <div class="flex justify-between items-center px-8 py-4">
+ <h1 class="text-xl font-bold text-orange-500">Shantanu • Software & VLSI Enthusiast</h1>
+    <ul class="flex gap-8 text-sm">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certificates">Certificates</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="h-screen flex flex-col justify-center items-center text-center relative overflow-hidden">
+  <div class="stars"></div>
+
+  <h2 class="text-4xl md:text-5xl font-bold max-w-2xl hero-text">
+    NIT Delhi Engineer | Web Developer | VLSI Enthusiast 
+    <p class="opacity-70 mt-3">🎓 NIT Delhi</p>
+  </h2>
+
+  <div class="flex flex-col items-center mt-10 gap-6">
+
+  <div class="rocket">🚀</div>
+
+  <span class="animate-bounce opacity-70">Scroll Down</span>
+<a href="SHANTANU.pdf" 
+   class="btn-icon bg-white/10 px-6 py-2 rounded-full hover:scale-110 transition">
+   📄 <span>Download Resume</span>
+</a>
+</div>
+</section>
+
+ <div id="about-cta" class="mt-6 hidden">
+  <button id="cta-btn"
+    class="bg-orange-500 px-6 py-2 rounded text-white hover:scale-105 transition">
+  </button>
+</div>
+<section id="about" class="px-8 py-16 text-center">
+  <h2 class="text-3xl text-orange-400 mb-6">About Me</h2>
+   <p id="about-text" class="max-w-2xl mx-auto text-lg mb-10 text-left"></p>
+
+
+<div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-10">
+
+
+  <div onclick="showCategory('cs')" 
+       class="cursor-pointer p-6 rounded-xl bg-white/5 hover:bg-orange-500/20 transition border border-orange-400">
+    <h3 class="text-2xl text-orange-400 font-bold mb-2">💻 Computer Science</h3>
+    <p class="opacity-70">Web Dev, DSA, Projects, UI/UX 🚀</p>
+  </div>
+
+  <div onclick="showCategory('vlsi')" 
+       class="cursor-pointer p-6 rounded-xl bg-white/5 hover:bg-orange-500/20 transition border border-orange-400">
+    <h3 class="text-2xl text-orange-400 font-bold mb-2">⚡ VLSI</h3>
+    <p class="opacity-70">Digital Design, Verilog, Circuits 🔌</p>
+  </div>
+
+</div>
+</section>
+
+<div id="vlsi-only-text" class="hidden text-center mt-10 text-xl text-orange-300">
+  ⚡ VLSI content will be shown here
+</div>
+<section id="skills" class="px-8 py-16 text-center fade">
+  <h2 class="text-3xl text-orange-400">Skills</h2>
+
+  <div class="mt-8 max-w-3xl mx-auto text-lg opacity-80">
+    <p>💻 HTML, CSS, JavaScript, React, Tailwind</p>
+    <p>⚙️ C++, DSA, Problem Solving</p>
+    <p>🔌 Verilog (Basic), Digital Design, Electronics</p>
+  </div>
+</section>
+
+<section id="projects" class="px-8 py-16 text-center fade">
+  <h2 class="text-3xl text-orange-400">My Projects</h2>
+
+ 
+  <div id="cs-projects" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+
+  
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <img src="https://source.unsplash.com/400x250/?weather" class="rounded mb-3">
+      <h3 class="text-xl text-orange-400">🌤 Weather App</h3>
+      <p class="text-sm opacity-70">Weather with API & animations</p>
+      <ul class="text-xs mt-2 opacity-70 text-left">
+  <li>• Tech: HTML, CSS, JavaScript, API</li>
+  <li>• Feature: Real-time weather fetch</li>
+  <li>• Challenge: API handling & UI animation</li>
+</ul>
+      <div class="flex gap-2 mt-3">
+        <a href="weather.html" target="_blank" class="bg-orange-500 px-3 py-1 rounded text-sm">Live</a>
+        <a href="https://github.com/Shantanu1117/Weather-App/blob/main/index2.html" class="bg-gray-700 px-3 py-1 rounded text-sm">Code</a>
+      </div>
+    </div>
+
+
+
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <img src="https://source.unsplash.com/400x250/?shopping" class="rounded mb-3">
+      <h3 class="text-xl text-orange-400">🛒 E-commerce</h3>
+      <p class="text-sm opacity-70">Cart, filters & checkout</p>
+      <ul class="text-xs mt-2 opacity-70 text-left">
+  <li>• Tech: HTML, CSS, JavaScript, API</li>
+  <li>• Feature: Real-time weather fetch</li>
+  <li>• Challenge: API handling & UI animation</li>
+</ul>
+      <div class="flex gap-2 mt-3">
+        <a href="ecommerce.html" target="_blank" class="bg-orange-500 px-3 py-1 rounded text-sm">Live</a>
+        <a href="https://github.com/Shantanu1117/Ecommerce-Website/blob/main/ecommerce.html" class="bg-gray-700 px-3 py-1 rounded text-sm">Code</a>
+      </div>
+    </div>
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <img src="https://source.unsplash.com/400x250/?movie" class="rounded mb-3">
+      <h3 class="text-xl text-orange-400">🎬 NeoFlix</h3>
+      <p class="text-sm opacity-70">Movie platform UI</p>
+      <ul class="text-xs mt-2 opacity-70 text-left">
+  <li>• Tech: HTML, CSS, JavaScript, API</li>
+  <li>• Feature: Real-time weather fetch</li>
+  <li>• Challenge: API handling & UI animation</li>
+</ul>
+      <div class="flex gap-2 mt-3">
+        <a href="neoflix.html" target="_blank" class="bg-orange-500 px-3 py-1 rounded text-sm">Live</a>
+        <a href="https://github.com/Shantanu1117/Neoflix/blob/main/neoflix.html" class="bg-gray-700 px-3 py-1 rounded text-sm">Code</a>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div id="vlsi-projects" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10 hidden">
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <img src="https://source.unsplash.com/400x250/?chip" class="rounded mb-3">
+      <h3 class="text-xl text-orange-400">🔌 Digital Circuit Design</h3>
+      <p class="text-sm opacity-70">Logic gates & simulation</p>
+    </div>
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <img src="https://source.unsplash.com/400x250/?microchip" class="rounded mb-3">
+      <h3 class="text-xl text-orange-400">⚙️ VLSI Mini Project</h3>
+      <p class="text-sm opacity-70">RTL design using Verilog</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section id="certificates" class="px-8 py-16 text-center fade">
+  <h2 class="text-3xl text-orange-400">Certificates</h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <h3 class="text-xl text-orange-400">📜 JavaScript Certification</h3>
+      <p class="text-sm opacity-70">
+        8-week JavaScript Full Course by GeeksforGeeks
+      </p>
+      <a href="https://media.geeksforgeeks.org/courses/certificates/105455588b2d441ee7a392dce2ab270d.pdf"
+         target="_blank"
+         class="inline-block mt-3 bg-orange-500 px-3 py-1 rounded text-sm">
+         View Certificate
+      </a>
+    </div>
+
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <h3 class="text-xl text-orange-400">🌐 Full Stack Developer Bootcamp</h3>
+      <p class="text-sm opacity-70">
+        6-week Full Stack Development Course by GeeksforGeeks
+      </p>
+      <a href="https://media.geeksforgeeks.org/courses/certificates/e2ce7874d0760818db78bb468a277b3a.pdf"
+         target="_blank"
+         class="inline-block mt-3 bg-orange-500 px-3 py-1 rounded text-sm">
+         View Certificate
+      </a>
+    </div>
+
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <h3 class="text-xl text-orange-400">⚛️ React JS Certification</h3>
+      <p class="text-sm opacity-70">
+        8-week React JS Course by GeeksforGeeks
+      </p>
+      <a href="https://media.geeksforgeeks.org/courses/certificates/6bdb3227ff9962846f0ec65f0460598c.pdf"
+         target="_blank"
+         class="inline-block mt-3 bg-orange-500 px-3 py-1 rounded text-sm">
+         View Certificate
+      </a>
+    </div>
+
+  
+    <div class="project-card bg-white/5 p-4 rounded-xl">
+      <h3 class="text-xl text-orange-400">🧠 Soft Skills Training</h3>
+      <p class="text-sm opacity-70">
+        4-week Professional Development Course by GeeksforGeeks
+      </p>
+      <a href="https://media.geeksforgeeks.org/courses/certificates/682b591568d92c2a10f8961ada66db35.pdf"
+         target="_blank"
+         class="inline-block mt-3 bg-orange-500 px-3 py-1 rounded text-sm">
+         View Certificate
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<p class="mb-4">📧 241221023@nitdelhi.ac.in</p>
+
+<div class="flex justify-center gap-6 mt-4">
+  <a href="https://linkedin.com/in/YOUR_LINK" target="_blank" class="underline">LinkedIn</a>
+  <a href="https://github.com/Shantanu1117" target="_blank" class="underline">GitHub</a>
+  <a href="resume.pdf" target="_blank" class="underline">Resume</a>
+</div>
+
+<footer class="text-center py-6 opacity-50">
+  © 2026 My Portfolio
+</footer>
+
+<script>
+
+let currentCategory = "cs"; 
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => e.isIntersecting && e.target.classList.add("show"));
+});
+document.querySelectorAll(".fade").forEach(el => observer.observe(el));
+
+
+const csText = `
+<h3 class="text-2xl text-orange-400 font-bold mb-3">💻 Computer Science Engineer</h3>
+
+<p class="mb-4">I am a passionate developer focused on building modern, responsive, and user-centric web applications. I enjoy transforming ideas into real-world digital experiences.</p>
+
+<ul class="list-disc ml-6 mb-4 text-left space-y-1">
+  <li>🚀 Strong foundation in <b>HTML, CSS, JavaScript</b></li>
+  <li>⚛️ Experience with <b>React.js</b> for building dynamic UIs</li>
+  <li>🎨 Skilled in <b>Tailwind CSS</b> for modern design systems</li>
+  <li>🧠 Understanding of <b>backend concepts</b> and application flow</li>
+  <li>💡 Deep interest in <b>problem solving & coding</b></li>
+</ul>
+
+<p class="mb-6">I continuously explore new technologies and strive to improve my development skills by building impactful projects.</p>
+
+<div class="flex gap-4 mt-6">
+
+  <a href="#projects" 
+     class="btn-icon bg-orange-500 px-6 py-2 rounded-full hover:scale-110 transition">
+     🚀 <span>View Projects</span>
+  </a>
+
+  <a href="#certificates" 
+     class="btn-icon bg-white/10 px-6 py-2 rounded-full hover:scale-110 transition">
+     📜 <span>View Certificates</span>
+  </a>
+
+</div>
+`;
+const vlsiText = `
+<h3 class="text-2xl text-orange-400 font-bold mb-3">⚡ VLSI Enthusiast</h3>
+
+<p class="mb-4">I am an undergraduate student at NIT Delhi with a strong interest in VLSI design and electronics.</p>
+
+<ul class="list-disc ml-6 mb-4 text-left space-y-1">
+  <li>📡 Interest in <b>Analog Communication</b></li>
+  <li>📊 Strong concepts in <b>Signals & Systems</b></li>
+  <li>🔌 Passion for <b>Electronic Devices & Circuits</b></li>
+  <li>⚙️ Exploring <b>Verilog & RTL Design</b></li>
+</ul>
+
+<p>I aim to build efficient hardware systems and explore chip-level innovations in the future.</p>
+`;
+
+
+function typeText(text) {
+  const el = document.getElementById("about-text");
+  if (!el) return; // 🔥 important fix
+  el.innerHTML = "";
+  let i = 0;
+
+  function typing() {
+    el.innerHTML = text.slice(0, i);
+    i++;
+    if (i <= text.length) {
+      setTimeout(typing, 10);
+    }
+  }
+  typing();
+}
+
+
+function showCategory(type) {
+  if (type === currentCategory) return;
+
+  const cs = document.getElementById("cs-projects");
+  const vlsi = document.getElementById("vlsi-projects");
+
+  const projects = document.getElementById("projects");
+  const certificates = document.getElementById("certificates");
+  const vlsiTextBox = document.getElementById("vlsi-only-text");
+
+  document.getElementById("about").scrollIntoView({
+    behavior: "smooth"
+  });
+
+
+  cs.classList.remove("slide-in-left","slide-in-right","slide-out-left","slide-out-right");
+  vlsi.classList.remove("slide-in-left","slide-in-right","slide-out-left","slide-out-right");
+
+  if (type === "cs") {
+
+    
+    vlsi.classList.add("slide-out-right");
+    cs.classList.remove("hidden");
+    cs.classList.add("slide-in-left");
+
+    setTimeout(() => {
+      vlsi.classList.add("hidden");
+    }, 400);
+
+    projects.classList.remove("hidden");
+    certificates.classList.remove("hidden");
+
+    if (vlsiTextBox) vlsiTextBox.classList.add("hidden");
+
+    typeText(csText);
+
+  } else {
+
+    cs.classList.add("slide-out-left");
+    vlsi.classList.remove("hidden");
+    vlsi.classList.add("slide-in-right");
+
+    setTimeout(() => {
+      cs.classList.add("hidden");
+    }, 400);
+
+    projects.classList.add("hidden");
+    certificates.classList.add("hidden");
+
+    if (vlsiTextBox) vlsiTextBox.classList.remove("hidden");
+
+    typeText(vlsiText);
+  }
+
+  currentCategory = type;
+}
+
+window.onload = () => {};
+
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const targetId = this.getAttribute('href');
+    const target = document.querySelector(targetId);
+
+    const projects = document.getElementById("projects");
+    const certificates = document.getElementById("certificates");
+    const vlsiTextBox = document.getElementById("vlsi-only-text");
+
+
+    if (projects) projects.classList.remove("hidden");
+    if (certificates) certificates.classList.remove("hidden");
+    if (vlsiTextBox) vlsiTextBox.classList.add("hidden");
+
+    if (target) {
+      const offset = 80;
+      const position = target.offsetTop - offset;
+
+      window.scrollTo({
+        top: position,
+        behavior: "smooth"
+      });
+    }
+  });
+});
+const cursor = document.getElementById("cursor");
+
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+document.querySelectorAll(".btn-icon").forEach(btn => {
+  btn.addEventListener("mousemove", e => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+  });
+
+  btn.addEventListener("mouseleave", () => {
+    btn.style.transform = "translate(0,0) scale(1)";
+  });
+});document.addEventListener("mousemove", e => {
+  const stars = document.querySelector(".stars");
+  const x = e.clientX / window.innerWidth;
+  const y = e.clientY / window.innerHeight;
+
+  stars.style.transform = `translate(-${x * 30}px, -${y * 30}px)`;
+});
+window.addEventListener("scroll", () => {
+  let scrollTop = document.documentElement.scrollTop;
+  let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  let scrolled = (scrollTop / height) * 100;
+
+  document.getElementById("progress-bar").style.width = scrolled + "%";
+});    
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+
+  document.querySelector(".hero-text").style.transform =
+    `translateY(${scrollY * 0.3}px)`;
+
+  document.querySelector(".rocket").style.transform =
+    `translateY(${scrollY * 0.5}px) rotate(${scrollY * 0.05}deg)`;
+});
+</script>
+
+</body>
+</html>

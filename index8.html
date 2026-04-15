@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portfolio</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at bottom, #ff6a00, #1a001f 60%);
+}
+
+.fade {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease;
+}
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card:hover {
+  box-shadow: 0 0 25px rgba(255,120,0,0.7);
+}
+
+.hero-text { animation: fadeInUp 1.2s ease forwards; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  animation: moveStars 60s linear infinite;
+}
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 10000px 5000px; }
+}
+</style>
+</head>
+
+<body class="text-white overflow-x-hidden">
+
+<!-- NAVBAR -->
+<nav id="nav" class="fixed w-full top-0 z-50 backdrop-blur-md bg-white/80 text-black">
+  <div class="flex justify-between items-center px-8 py-4">
+    <h1 class="text-xl font-bold text-orange-500">MyPortfolio</h1>
+    <ul class="flex gap-8 text-sm">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certificates">Certificates</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="h-screen flex flex-col justify-center items-center text-center relative overflow-hidden">
+  <div class="stars"></div>
+
+  <h2 class="text-4xl md:text-5xl font-bold max-w-2xl hero-text">
+    I build <span class="text-orange-400">modern</span> web experiences 🚀
+  </h2>
+
+  <span class="mt-10 animate-bounce opacity-60">↓ Scroll Down</span>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="px-8 py-24 text-center">
+  <h2 class="text-3xl text-orange-400 mb-6">About Me</h2>
+
+  <p class="max-w-2xl mx-auto text-lg mb-10">
+    Hi, I'm <span class="text-orange-400 font-semibold">Shantanu</span>, a 2nd-year undergraduate at NIT Delhi specializing in VLSI.  
+    I am passionate about building modern web applications and exploring hardware design.  
+    My interests lie at the intersection of software development and electronics.
+  </p>
+
+  <div class="flex justify-center gap-6">
+    <button id="cs-btn" onclick="showCategory('cs')" 
+  class="bg-orange-500 px-4 py-2 rounded">💻 CS Projects</button>
+
+    <button id="vlsi-btn" onclick="showCategory('vlsi')" 
+  class="bg-gray-700 px-4 py-2 rounded">⚡ VLSI Projects</button>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="px-8 py-24 text-center fade">
+  <h2 class="text-3xl text-orange-400">My Projects</h2>
+
+  <div id="cs-projects" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+  </div>
+
+  <!-- VLSI PROJECTS -->
+  <div id="vlsi-projects" class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mt-10 hidden">
+
+    <!-- PROJECT 1 -->
+    <div class="project-card bg-white/5 p-4 rounded-xl text-left">
+      <h3 class="text-xl text-orange-400 mb-2">🔌 RISC-V Components</h3>
+      <pre class="text-xs overflow-auto">
+module ALU (...);
+// AND, OR, ADD, SUB operations
+endmodule
+
+module RegisterFile (...);
+// 32 registers implementation
+endmodule
+
+module HazardDetection (...);
+// pipeline hazard detection
+endmodule
+      </pre>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="project-card bg-white/5 p-4 rounded-xl text-left">
+      <h3 class="text-xl text-orange-400 mb-2">📡 UART + FIFO System</h3>
+      <pre class="text-xs overflow-auto">
+module baud_gen #(DIVISOR=5208);
+// baud rate generator
+endmodule
+
+module uart_tx (...);
+// UART transmitter FSM
+endmodule
+
+module fifo #(DEPTH=16);
+// FIFO buffer implementation
+endmodule
+      </pre>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+function showCategory(type) {
+  const cs = document.getElementById("cs-projects");
+  const vlsi = document.getElementById("vlsi-projects");
+
+  const csBtn = document.getElementById("cs-btn");
+  const vlsiBtn = document.getElementById("vlsi-btn");
+
+  if (type === "cs") {
+    cs.classList.remove("hidden");
+    vlsi.classList.add("hidden");
+
+    csBtn.classList.add("bg-orange-500");
+    csBtn.classList.remove("bg-gray-700");
+
+    vlsiBtn.classList.add("bg-gray-700");
+    vlsiBtn.classList.remove("bg-orange-500");
+
+  } else {
+    vlsi.classList.remove("hidden");
+    cs.classList.add("hidden");
+
+    vlsiBtn.classList.add("bg-orange-500");
+    vlsiBtn.classList.remove("bg-gray-700");
+
+    csBtn.classList.add("bg-gray-700");
+    csBtn.classList.remove("bg-orange-500");
+  }
+}
+</script>
+
+</body>
+</html>

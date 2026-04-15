@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoStore God Level</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body.dark { --bg:#0f172a; --card:#1e293b; --primary:#00ffff; color:white;}
+body.light { --bg:#f9fafb; --card:#ffffff; --primary:#6366f1; color:black;}
+body { background:var(--bg); transition:0.5s; overflow-x:hidden; }
+
+.card { transition:0.4s; }
+.card:hover { transform:scale(1.07) rotate(1deg); }
+
+body.dark .glow { box-shadow:0 0 20px var(--primary),0 0 40px var(--primary); }
+body.light .glow { box-shadow:0 10px 25px rgba(0,0,0,0.1); }
+
+.glass {
+ background:rgba(255,255,255,0.08);
+ backdrop-filter:blur(10px);
+ border:1px solid rgba(255,255,255,0.1);
+}
+
+.bg-animate {
+ background:linear-gradient(270deg,#00ffff,#8b5cf6,#00ffff);
+ background-size:600% 600%;
+ animation:gradientMove 8s ease infinite;
+}
+@keyframes gradientMove {
+ 0%{background-position:0% 50%;}
+ 50%{background-position:100% 50%;}
+ 100%{background-position:0% 50%;}
+}
+
+.fade-up { opacity:0; transform:translateY(30px); transition:0.6s; }
+.fade-up.show { opacity:1; transform:translateY(0); }
+
+.float { animation:floaty 3s ease-in-out infinite; }
+@keyframes floaty {
+ 0%,100%{transform:translateY(0);}
+ 50%{transform:translateY(-10px);}
+}
+
+.btn-animate { position:relative; overflow:hidden; }
+.btn-animate::before {
+ content:"";
+ position:absolute;
+ width:120%; height:100%;
+ background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);
+ transform:translateX(-100%);
+}
+.btn-animate:hover::before {
+ transform:translateX(100%);
+ transition:0.6s;
+}
+
+.zoom-in { animation:zoomIn 0.4s ease; }
+@keyframes zoomIn {
+ from{transform:scale(0.8);opacity:0;}
+ to{transform:scale(1);opacity:1;}
+}
+
+.particle {
+ position:fixed;
+ width:4px;height:4px;
+ background:cyan;
+ border-radius:50%;
+ opacity:0.5;
+ animation:float 10s linear infinite;
+}
+@keyframes float {
+ from{transform:translateY(100vh);}
+ to{transform:translateY(-10vh);}
+}
+</style>
+</head>
+
+<body class="dark" id="body">
+
+<script>
+for(let i=0;i<40;i++){
+ let p=document.createElement('div');
+ p.className='particle';
+ p.style.left=Math.random()*100+'vw';
+ p.style.animationDuration=(5+Math.random()*10)+'s';
+ document.body.appendChild(p);
+}
+</script>
+
+<header class="sticky top-0 backdrop-blur bg-black/60 p-4 flex justify-between z-50">
+<h1 class="text-2xl font-bold text-cyan-400">NeoStore</h1>
+<div class="flex gap-4">
+<input id="search" placeholder="Search..." class="p-2 rounded text-black">
+<select id="category" class="p-2 rounded text-black">
+<option value="all">All</option>
+<option value="electronics">Electronics</option>
+<option value="fashion">Fashion</option>
+<option value="gadgets">Gadgets</option>
+</select>
+<button onclick="toggleTheme()" class="px-3 py-1 bg-cyan-500 rounded">🌙</button>
+<button onclick="toggleCart()" class="px-3 py-1 bg-green-500 rounded">Cart</button>
+</div>
+</header>
+
+<section class="p-16 text-center bg-animate">
+<h2 class="text-6xl font-bold">Future Shopping</h2>
+<p class="mt-4">Real Products • Real Feel</p>
+</section>
+
+<section class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" id="products"></section>
+
+<div id="cart" class="fixed right-0 top-0 w-80 h-full bg-gray-800 p-4 hidden overflow-y-auto z-50">
+<h2 class="text-xl mb-4">Cart</h2>
+<div id="cartItems"></div>
+<p id="total"></p>
+<button onclick="checkout()" class="bg-green-500 px-4 py-2 mt-2 w-full">Checkout</button>
+</div>
+
+<div id="checkoutModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center">
+<div class="bg-gray-800 p-6 rounded text-center">
+<h2 class="mb-3">Scan QR to Pay</h2>
+<div id="qrcode"></div>
+<button onclick="paySuccess()" class="mt-4 bg-cyan-500 px-4 py-2 w-full">I Paid</button>
+</div>
+</div>
+<div id="productModal" class="zoom-in fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50">
+<div class="bg-gray-800 p-6 rounded w-80 text-center relative">
+<button onclick="closeModal()" class="absolute top-2 right-2">✖</button>
+<img id="modalImg" class="w-full h-40 object-cover rounded">
+<h2 id="modalName"></h2>
+<p id="modalPrice" class="text-green-400"></p>
+
+<div class="flex justify-center gap-4 mt-3">
+<button onclick="changeModalQty(-1)">-</button>
+<span id="modalQty">1</span>
+<button onclick="changeModalQty(1)">+</button>
+</div>
+
+<button onclick="addModalToCart()" class="bg-cyan-500 px-4 py-2 mt-4 w-full btn-animate">
+Add to Cart
+</button>
+</div>
+</div>
+
+<script>
+const names=["iPhone 15 Pro","Samsung Galaxy S24","MacBook Air M2","Dell XPS Laptop","Sony Headphones","Nike Sneakers","Adidas Jacket","Smart Watch Pro","Gaming Mouse","Mechanical Keyboard"];
+const categories=['electronics','fashion','gadgets'];
+const products=[];
+
+for(let i=1;i<=60;i++){
+ let price=Math.floor(Math.random()*1000)+100;
+ let discount=Math.floor(Math.random()*40)+10;
+ let finalPrice=Math.floor(price-(price*discount/100));
+ products.push({id:i,name:names[i%10],original:price,price:finalPrice,discount,cat:categories[i%3],img:`https://picsum.photos/300?random=${i}`});
+}
+
+let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+let currentProduct=null, modalQty=1;
+
+function updateCart(){
+ localStorage.setItem('cart', JSON.stringify(cartData));
+ renderCart();
+}
+
+function addToCart(id){
+ let item=products.find(p=>p.id===id);
+ let existing=cartData.find(p=>p.id===id);
+ if(existing) existing.qty++;
+ else cartData.push({...item,qty:1});
+ updateCart();
+}
+
+function addModalToCart(){
+ let existing=cartData.find(p=>p.id===currentProduct.id);
+ if(existing) existing.qty+=modalQty;
+ else cartData.push({...currentProduct,qty:modalQty});
+ updateCart();
+ closeModal();
+}
+
+function removeItem(i){
+ cartData.splice(i,1);
+ updateCart();
+}
+
+function changeQty(i,d){
+ cartData[i].qty+=d;
+ if(cartData[i].qty<=0) cartData.splice(i,1);
+ updateCart();
+}
+
+function renderCart(){
+ let container=document.getElementById('cartItems');
+ let totalBox=document.getElementById('total');
+ container.innerHTML='';
+ let total=0;
+
+ cartData.forEach((item,i)=>{
+ total+=item.price*item.qty;
+ container.innerHTML+=`
+ <div class="flex justify-between items-center border-b py-2">
+ <div>
+ <p>${item.name}</p>
+ <p class="text-green-400">$${item.price} x ${item.qty}</p>
+ </div>
+ <div class="flex gap-2">
+ <button onclick="changeQty(${i},-1)" class="bg-red-500 px-2">-</button>
+ <button onclick="changeQty(${i},1)" class="bg-green-500 px-2">+</button>
+ <button onclick="removeItem(${i})" class="bg-gray-500 px-2">✖</button>
+ </div>
+ </div>`;
+ });
+
+ totalBox.innerText="Total: $"+total;
+}
+
+function toggleCart(){
+ document.getElementById('cart').classList.toggle('hidden');
+}
+
+function checkout(){
+ let total=cartData.reduce((s,i)=>s+i.price*i.qty,0);
+ if(total===0){alert("Cart empty");return;}
+
+ let checkoutModal=document.getElementById('checkoutModal');
+ let qrcode=document.getElementById('qrcode');
+
+ checkoutModal.classList.remove('hidden');
+ qrcode.innerHTML='';
+
+ new QRCode(qrcode,`upi://pay?pa=test@upi&pn=NeoStore&am=${total}`);
+}
+
+function paySuccess(){
+ alert("Payment Successful ✅");
+ cartData=[];
+ localStorage.removeItem('cart');
+ renderCart();
+ document.getElementById('checkoutModal').classList.add('hidden');
+}
+
+function renderProducts(){
+ let search=document.getElementById('search').value.toLowerCase();
+ let cat=document.getElementById('category').value;
+ let container=document.getElementById('products');
+ container.innerHTML='';
+
+ products.filter(p=>(cat==='all'||p.cat===cat)&&p.name.toLowerCase().includes(search))
+ .forEach(p=>{
+ container.innerHTML+=`
+ <div onclick="openModal(${p.id})" class="card glass glow fade-up float p-4 rounded cursor-pointer">
+ <img src="${p.img}" class="h-40 w-full object-cover">
+ <h3>${p.name}</h3>
+ <p><span class="line-through">$${p.original}</span> <span class="text-green-400">$${p.price}</span></p>
+ <button onclick="event.stopPropagation();addToCart(${p.id})" class="bg-cyan-500 w-full mt-2 btn-animate">Add</button>
+ </div>`;
+ });
+
+ setTimeout(()=>document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('show')),100);
+}
+
+function openModal(id){
+ currentProduct=products.find(p=>p.id===id);
+ modalQty=1;
+
+ document.getElementById('modalImg').src=currentProduct.img;
+ document.getElementById('modalName').innerText=currentProduct.name;
+ document.getElementById('modalPrice').innerText='$'+currentProduct.price;
+ document.getElementById('modalQty').innerText=1;
+
+ document.getElementById('productModal').classList.remove('hidden');
+}
+
+function closeModal(){
+ document.getElementById('productModal').classList.add('hidden');
+}
+
+function changeModalQty(d){
+ modalQty=Math.max(1,modalQty+d);
+ document.getElementById('modalQty').innerText=modalQty;
+}
+
+function toggleTheme(){
+ let b=document.getElementById('body');
+ b.classList.toggle('dark');
+ b.classList.toggle('light');
+}
+
+search.oninput=renderProducts;
+category.onchange=renderProducts;
+
+renderProducts();
+renderCart();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoFlix Ultra</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  overflow-x:hidden;
+}
+.glow:hover {
+  box-shadow:0 0 15px #22d3ee,0 0 30px #9333ea;
+}
+.card{transition:all .3s}
+.card:hover{transform:scale(1.05)}
+.glass{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(10px)
+}
+#loader{
+  position:fixed;inset:0;background:black;
+  display:flex;align-items:center;justify-content:center;z-index:999
+}
+.gradient-text{
+  background:linear-gradient(to right,#22d3ee,#9333ea);
+  -webkit-background-clip:text;color:transparent
+}
+.cursor{
+  width:12px;height:12px;border-radius:50%;
+  position:fixed;background:#22d3ee;
+  pointer-events:none;box-shadow:0 0 15px #22d3ee
+}
+.active-chip{
+  background:linear-gradient(to right,#22d3ee,#9333ea);
+}
+</style>
+</head>
+
+<body class="text-white">
+
+<div id="loader"><h1 class="text-3xl animate-pulse">Loading NeoFlix...</h1></div>
+<div id="cursor" class="cursor"></div>
+<header class="fixed top-0 w-full glass p-4 flex items-center justify-between z-50 gap-4">
+
+<div class="flex items-center gap-6">
+<h1 class="text-2xl font-bold gradient-text cursor-pointer">NeoFlix</h1>
+
+<nav class="hidden md:flex gap-4 text-sm opacity-80">
+<span class="hover:text-cyan-400 cursor-pointer">Home</span>
+<span class="hover:text-cyan-400 cursor-pointer">Movies</span>
+<span class="hover:text-cyan-400 cursor-pointer">Series</span>
+<span class="hover:text-cyan-400 cursor-pointer">New & Popular</span>
+<span class="hover:text-cyan-400 cursor-pointer">My List</span>
+</nav>
+</div>
+<div class="flex-1 flex justify-center">
+<input id="search" placeholder="Search movies, shows..."
+class="px-4 py-1 rounded-full bg-black/50 w-60 md:w-80 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+</div>
+<div class="flex items-center gap-4">
+<span class="cursor-pointer hover:text-yellow-400">⭐</span>
+<span class="cursor-pointer hover:text-red-400">❤️</span>
+<span class="cursor-pointer hover:text-green-400">🔔</span>
+
+<button id="cartBtn" class="glow px-3 py-1 rounded bg-black/40">
+Cart (<span id="cartCount">0</span>)
+</button>
+
+<img src="https://i.pravatar.cc/40" class="w-8 h-8 rounded-full cursor-pointer border border-white/30">
+</div>
+
+</header>
+
+<section class="h-[60vh] flex items-center justify-center text-center relative mt-20"
+style="background:url('https://assets-in.bmscdn.com/discovery-catalog/events/et00452447-fzzdtqzlfw-landscape.jpg') center no-repeat;">
+<div class="absolute inset-0 bg-black/70"></div>
+
+<div class="relative z-10">
+<h1 class="text-5xl font-bold gradient-text">Stream The Future</h1>
+<p class="opacity-80 mt-3">Premium Movies & Series</p>
+</div>
+</section>
+<div class="flex flex-wrap items-center gap-3 p-4 -mt-2">
+
+<select id="filterType" class="bg-black/50 p-2 rounded">
+<option value="all">All</option>
+<option value="movie">Movies</option>
+<option value="webseries">Web Series</option>
+</select>
+
+<div id="chips" class="flex gap-2 flex-wrap">
+<span class="chip px-3 py-1 glass cursor-pointer active-chip" data-cat="all">All</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="kdrama">K-Drama</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">Horror</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="romantic">Romantic</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="scifi">Sci-Fi</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">old</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">chinese</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">action</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">blockbuster</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">rated</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">erotic</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">motivation</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">emotional</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">dramas</span>
+<span class="chip px-3 py-1 glass cursor-pointer glow" data-cat="horror">serials</span>
+
+</div>
+
+</div>
+
+<div id="movies" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4"></div>
+
+<div id="cart" class="fixed right-0 top-0 w-80 h-full bg-black p-4 hidden overflow-y-auto">
+<h2 class="text-xl mb-4">Cart</h2>
+<div id="cartItems"></div>
+<p class="mt-3">Total: ₹<span id="total">0</span></p>
+<button id="checkoutBtn" class="glow mt-3 w-full">Checkout</button>
+</div>
+
+<script>
+const posters = [
+"https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg", 
+"https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg", 
+"https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg", 
+"https://image.tmdb.org/t/p/w500/5KCVkau1HEl7ZzfPsKAPM0sMiKc.jpg", 
+"https://image.tmdb.org/t/p/w500/6ELCZlTA5lGUops70hKdB83WJxH.jpg",
+"https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+"https://image.tmdb.org/t/p/w500/aNtAP8ZzUMdnCPoqYgVOcgI0Eh4.jpg",
+"https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+"https://image.tmdb.org/t/p/w500/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg",
+"https://image.tmdb.org/t/p/w500/2CAL2433ZeIihfX1Hb2139CX0pW.jpg",
+"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+"https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+"https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg",
+"https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+"https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+"https://image.tmdb.org/t/p/w500/8WUVHemHFH2ZIP6NWkwlHWsyrEL.jpg"
+];
+const categories=["kdrama","horror","romantic","scifi"];
+const movies = Array.from({length:16},(_,i)=>({
+id:i,
+title:"Movie "+(i+1),
+rating:(Math.random()*5).toFixed(1),
+price:100+i*20,
+type:i%2?'movie':'webseries',
+category:categories[i%4],
+image:posters[i], 
+description:"Futuristic premium content"
+}));
+
+let cart = JSON.parse(localStorage.getItem("cart"))||{};
+let fav = JSON.parse(localStorage.getItem("fav"))||[];
+let selectedCat="all";
+
+function render(list=movies){
+const el=document.getElementById("movies");
+el.innerHTML="";
+
+list.forEach(m=>{
+el.innerHTML+=`
+<div class="card glass p-2 glow">
+<img src="${m.image}" class="rounded">
+<h3>${m.title}</h3>
+<p>⭐ ${m.rating}</p>
+<p>₹${m.price}</p>
+
+<button onclick="addCart(${m.id})" class="glow w-full mt-1">Buy</button>
+
+<button onclick="toggleFav(${m.id})"
+class="${fav.includes(m.id)?'text-red-500':''}">
+❤️
+</button>
+</div>`;
+});
+}
+function addCart(id){
+cart[id]=(cart[id]||0)+1;
+localStorage.setItem("cart",JSON.stringify(cart));
+updateCart();
+}
+
+function removeItem(id){
+delete cart[id];
+updateCart();
+}
+
+function changeQty(id,delta){
+cart[id]+=delta;
+if(cart[id]<=0) delete cart[id];
+updateCart();
+}
+
+function updateCart(){
+let total=0;
+let html="";
+
+for(let id in cart){
+let m=movies[id];
+let qty=cart[id];
+total+=m.price*qty;
+
+html+=`
+<div class="mb-2 border-b pb-2">
+<p>${m.title}</p>
+<p>₹${m.price} x ${qty}</p>
+
+<div class="flex gap-2 mt-1">
+<button onclick="changeQty(${id},1)">➕</button>
+<button onclick="changeQty(${id},-1)">➖</button>
+<button onclick="removeItem(${id})">❌</button>
+</div>
+</div>`;
+}
+
+document.getElementById("cartItems").innerHTML=html;
+document.getElementById("total").innerText=total;
+document.getElementById("cartCount").innerText=
+Object.values(cart).reduce((a,b)=>a+b,0);
+
+localStorage.setItem("cart",JSON.stringify(cart));
+}
+
+function toggleFav(id){
+if(fav.includes(id)) fav=fav.filter(x=>x!=id);
+else fav.push(id);
+
+localStorage.setItem("fav",JSON.stringify(fav));
+render(applyFilters());
+}
+
+function applyFilters(){
+let type=document.getElementById("filterType").value;
+
+return movies.filter(m=>{
+let okType = type==='all'||m.type===type;
+let okCat = selectedCat==='all'||m.category===selectedCat;
+return okType && okCat;
+});
+}
+
+document.getElementById("search").addEventListener("input",e=>{
+let v=e.target.value.toLowerCase();
+render(applyFilters().filter(m=>m.title.toLowerCase().includes(v)));
+});
+
+document.getElementById("filterType").addEventListener("change",()=>{
+render(applyFilters());
+});
+
+document.querySelectorAll(".chip").forEach(c=>{
+c.onclick=()=>{
+document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active-chip"));
+c.classList.add("active-chip");
+
+selectedCat=c.dataset.cat;
+render(applyFilters());
+};
+});
+
+document.getElementById("cartBtn").onclick=()=>document.getElementById("cart").classList.toggle("hidden");
+
+document.getElementById("checkoutBtn").onclick=()=>{
+alert("Payment Successful 🎉");
+cart={};
+updateCart();
+};
+
+document.addEventListener("mousemove",e=>{
+let c=document.getElementById("cursor");
+c.style.top=e.clientY+"px";
+c.style.left=e.clientX+"px";
+});
+
+window.onload=()=>{
+setTimeout(()=>document.getElementById("loader").style.display="none",1000);
+render();
+updateCart();
+};
+
+</script>
+
+</body>
+</html>
